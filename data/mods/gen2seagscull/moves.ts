@@ -981,7 +981,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		basePower: 0,
 		category: "Special",
 		name: "Harmonize",
-		pp: 5,
+		pp: 10,
 		priority: 0,
 		flags: {},
 		secondary: null,

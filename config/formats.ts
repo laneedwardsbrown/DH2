@@ -2436,7 +2436,7 @@ export const Formats: FormatList = [
 			`&bullet; <a href="https://docs.google.com/spreadsheets/d/1ZG8X-_3lE-IzBbVDtcTS_cBoz7_RMfIM8P8UyzSMYr4/edit?usp=sharing">No Thread Available</a>`,
 		],
 
-		mod: 'gen2SeaGSCull',
+		mod: 'gen2seagscull',
 		ruleset: ['Standard'],
 		banlist: ['Uber'],
 	},
