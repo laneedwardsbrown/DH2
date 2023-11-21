@@ -982,6 +982,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		category: "Special",
 		name: "Harmonize",
 		pp: 10,
+		shortDesc: "Makes the target's HP equal the user's.",
 		priority: 0,
 		flags: {},
 		secondary: null,
