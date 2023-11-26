@@ -981,7 +981,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		basePower: 0,
 		category: "Special",
 		name: "Harmonize",
-		pp: 10,
+		pp: 4,
 		shortDesc: "Makes the target's HP equal the user's.",
 		priority: 0,
 		flags: {},
@@ -1000,5 +1000,23 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 				return null;
 			}
 		},
+	},
+	rockhead: {
+		num: 442,
+		accuracy: 90,
+		basePower: 90,
+		category: "Physical",
+		name: "Rock Head",
+		gen:2,
+		pp: 15,
+		priority: 0,
+		flags: {contact: 1, protect: 1, mirror: 1},
+		secondary: {
+			chance: 30,
+			volatileStatus: 'flinch',
+		},
+		target: "normal",
+		type: "Rock",
+		contestType: "Tough",
 	},
 };

@@ -80,6 +80,7 @@ export const Learnsets: {[k: string]: ModdedLearnsetData} = {
 			toxic: ["2M", "1M"],
 			vinewhip: ["2L10", "1L13"],
 			harmonize: ["2L10"],
+			rockhead: ["2L10"],
 		},
 		eventData: [
 			{generation: 2, level: 5, shiny: 1, moves: ["tackle", "growl", "ancientpower"]},
