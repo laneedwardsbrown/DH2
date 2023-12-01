@@ -324,6 +324,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		category: "Special",
 		shortDesc: "Always critically hits.",
 		name: "Snipe Shot",
+		viable: true,
 		pp: 10,
 		priority: 0,
 		flags: {protect: 1, mirror: 1, pulse: 1},
@@ -340,6 +341,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		category: "Physical",
 		shortDesc: "Always critically hits.",
 		name: "False Surrender",
+		viable: true,
 		pp: 10,
 		priority: 0,
 		flags: {contact: 1, protect: 1, mirror: 1},
@@ -715,7 +717,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		secondary: null,
 		target: "normal",
 		type: "Fire",
-	},
+	}, /*
   parry: {
 	   accuracy: 100,
 	   basePower: 80,
@@ -732,7 +734,10 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 	   priorityChargeCallback(pokemon) {
 			this.add('-message', `${pokemon.name} is attempting to parry!`);
 			this.actions.useMove("Parry Condition", pokemon);
-	   }, 
+		}, 
+		beforeMoveCallback(pokemon) {
+			this.actions.useMove("Parry Attack", pokemon);
+		},
 	   secondary: {}, // sheer force boosted
 	   target: "normal",
 	   type: "Fighting",
@@ -745,7 +750,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 	   shortDesc: "Required to make Parry work.",
 	   name: "Parry Condition",
 	   pp: 10,
-	   priority: 0,
+	   priority: 6,
 	   flags: {},
 		volatileStatus: 'parrycondition',
 		onPrepareHit(target, source, move) {
@@ -778,9 +783,6 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 				this.add('cant', pokemon, move, move);
 				this.add('-message', `${pokemon.name}'s attack was parried!`);
 				return false;
-				if (pokemon.hasAbility('steadfast')) {
-					this.boost({spe: 1}, pokemon);					
-				}
 			}
 		},
 	  },	
@@ -788,6 +790,71 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 	  target: "normal",
 	  type: "Fighting",
 	  contestType: "Clever",
+    },
+  parryattack: {
+	   accuracy: 100,
+	   basePower: 80,
+	   category: "Physical",
+	   shortDesc: "Required to make Parry work.",
+	   name: "Parry Attack",
+	   pp: 10,
+	   priority: 0,
+	   flags: {contact: 1, protect: 1, mirror: 1},
+		onPrepareHit(target, source, move) {
+			this.attrLastMove('[still]');
+			this.add('-anim', source, "Mach Punch", target);
+		},
+	   secondary: {}, // sheer force boosted
+	   target: "normal",
+	   type: "Fighting",
+	   contestType: "Clever",
+    }, */
+  parry: {
+	   accuracy: 100,
+	   basePower: 80,
+	   category: "Physical",
+	   shortDesc: "If the foe used a priority move, this move hits before that move and flinches the foe.",
+	   name: "Parry",
+	   pp: 10,
+	   priority: 0,
+	   flags: {contact: 1, protect: 1, mirror: 1},
+		onPrepareHit(target, source, move) {
+			this.attrLastMove('[still]');
+			this.add('-anim', source, "Mach Punch", target);
+		},
+		priorityChargeCallback(pokemon) {
+			this.add('-anim', pokemon, "Imprison", pokemon);
+			this.add('-message', `${pokemon.name} is attempting to parry!`);
+			pokemon.addVolatile('parry');
+		},
+	   secondary: {}, // sheer force boosted
+		condition: {
+			duration: 1,
+			onStart(target, source) {
+				this.add('-singleturn', source, 'Parry');
+			},
+			onFoeTryMove(target, source, move) {
+				const targetAllExceptions = ['perishsong', 'flowershield', 'rototiller'];
+				if (move.target === 'foeSide' || (move.target === 'all' && !targetAllExceptions.includes(move.id))) {
+					return;
+				}
+				const parryHolder = this.effectState.target;
+				if ((source.isAlly(parryHolder) || move.target === 'all') &&
+					(!source.hasAbility('innerfocus') || !source.hasAbility('shielddust') ||
+					!source.hasAbility('steadfast') || !source.hasItem('covertcloak') || 
+				 	!source.hasAbility('sandveil') && !this.field.isWeather('sandstorm') ||
+				 	!source.hasAbility('sunblock') && !this.field.isWeather('sunnyday')  ||
+				 	!source.hasAbility('snowcloak') && !this.field.isWeather('snow'))
+					&& move.priority > 0.1) {
+					this.attrLastMove('[still]');
+					this.add('cant', parryHolder, 'move: Parry', move, '[of] ' + target);
+					return false;
+				}
+			},
+		},
+	   target: "normal",
+	   type: "Fighting",
+	   contestType: "Clever",
     },
 	rollout: {
 		num: 205,
@@ -1541,22 +1608,23 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		basePower: 70,
 		category: "Physical",
 	   shortDesc: "2x power if the user has negative stat changes or a status.",
-		viable: true,
 		name: "Lash Out",
+		viable: true,
 		pp: 10,
 		priority: 0,
 		flags: {contact: 1, protect: 1, mirror: 1},
 		onBasePower(basePower, pokemon) {
 			const negativeVolatiles = ['confusion', 'taunt', 'torment', 'trapped', 'partiallytrapped', 'leechseed', 'sandspit',
-			'attract', 'curse', 'disable', 'electrify', 'embargo', 'encore', 'foresight', 'gastroacid', 'foresight', 'miracleeye',
-			'glaiverush', 'healblock', 'throatchop', 'windbreaker', 'nightmare', 'octolock', 'powder', 'saltcure', 'smackdown',
-			'syrupbomb', 'tarshot', 'telekinesis', 'yawn'];
-			const boosts: SparseBoostsTable = {};
-			let i: BoostName;
+				'attract', 'curse', 'disable', 'electrify', 'embargo', 'encore', 'foresight', 'gastroacid', 'foresight', 'miracleeye',
+				'glaiverush', 'healblock', 'throatchop', 'windbreaker', 'nightmare', 'octolock', 'powder', 'saltcure', 'smackdown',
+				'syrupbomb', 'tarshot', 'telekinesis', 'yawn'];
+			let i: BoostID;
 			for (i in pokemon.boosts) {
 				for (const volatile of negativeVolatiles) {
-					if (pokemon.status || pokemon.volatiles[volatile] || pokemon.boosts[i] < 0) {
+					if (pokemon.status && pokemon.status !== 'brn' || pokemon.volatiles[volatile] || pokemon.boosts[i] < 0) {
 						return this.chainModify(2);
+					} else if (pokemon.status === 'brn') {
+						return this.chainModify(4);
 					}
 				}
 			}
