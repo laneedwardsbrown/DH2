@@ -1038,4 +1038,26 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		gen: 2,
 		contestType: "Cool",
 	},
+	strongarm: {
+		num: 309,
+		accuracy: 90,
+		basePower: 90,
+		category: "Physical",
+		name: "Strong Arm",
+		pp: 10,
+		priority: 0,
+		flags: {contact: 1, protect: 1, mirror: 1, punch: 1},
+		secondary: {
+			chance: 20,
+			self: {
+				boosts: {
+					atk: 1,
+				},
+			},
+		},
+		gen: 2,
+		target: "normal",
+		type: "Steel",
+		contestType: "Cool",
+	},
 };

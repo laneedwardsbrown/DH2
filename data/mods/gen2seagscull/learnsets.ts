@@ -82,6 +82,7 @@ export const Learnsets: {[k: string]: ModdedLearnsetData} = {
 			harmonize: ["2L10"],
 			rockhead: ["2L10"],
 			uproot: ["2L10"],
+			strongarm: ["2L10"],
 		},
 		eventData: [
 			{generation: 2, level: 5, shiny: 1, moves: ["tackle", "growl", "ancientpower"]},
