@@ -1060,4 +1060,51 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		type: "Steel",
 		contestType: "Cool",
 	},
+	bigbounce: {
+		num: 309,
+		accuracy: 85,
+		basePower: 120,
+		category: "Physical",
+		name: "Big Bounce",
+		pp: 5,
+		priority: 0,
+		inherit: true,
+		gen: 2,
+		secondary: {
+			chance: 30,
+			status: 'par',
+		},
+		onTryMove(attacker, defender, move) {
+			this.add('-message', attacker.name + " bounced high up!", '[identify]');
+			if (attacker.removeVolatile(move.id)) {
+				this.add('-message', attacker.name + " made a big splash!", '[identify]');
+				return;
+			}
+			if (!this.runEvent('ChargeMove', attacker, defender, move)) {
+				return;
+			}
+			attacker.addVolatile('twoturnmove', defender);
+			return null;
+		},
+		condition: {
+			duration: 2,
+			onInvulnerability(target, source, move) {
+				if (['gust', 'twister', 'skyuppercut', 'thunder', 'hurricane', 'smackdown', 'thousandarrows'].includes(move.id)) {
+					return;
+				}
+				return false;
+			},
+			onSourceModifyDamage(damage, source, target, move) {
+				if (move.id === 'gust' || move.id === 'twister') {
+					return this.chainModify(2);
+				}
+			},
+		},
+		target: "any",
+		type: "Water",
+		contestType: "Clever",
+		onPrepareHit(target, source) {
+			return source.status !== 'slp';
+		},
+	},
 };
